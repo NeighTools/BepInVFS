@@ -10190,12 +10190,26 @@ namespace nlohmann
 		/// the template arguments passed to class @ref basic_json.
 		/// @{
 
+		
+		// EDIT:
+		// Since I'm using the default implementation with normal strings, it's enough to have a basic implementation
+		// This is needed to support anycasing
+		struct StringIgnoreCaseLess
+		{
+			bool operator()(const std::string& s1, const std::string& s2) const
+			{
+				// (s1 < s2) ignoring string case
+				return CompareStringA(LOCALE_INVARIANT, NORM_IGNORECASE, s1.c_str(), -1, s2.c_str(), -1) == CSTR_LESS_THAN;
+			}
+		};
+
+
 #if defined(JSON_HAS_CPP_14)
 		// Use transparent comparator if possible, combined with perfect forwarding
 		// on find() and count() calls prevents unnecessary string construction.
 		using object_comparator_t = std::less<>;
 #else
-		using object_comparator_t = std::less<StringType>;
+		using object_comparator_t = StringIgnoreCaseLess;
 #endif
 
 		/*!
