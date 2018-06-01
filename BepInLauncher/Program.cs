@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using SimpleJSON;
 
 namespace BepInLauncher
@@ -12,18 +13,30 @@ namespace BepInLauncher
     {
         public static string GamePath { get; set; }
 
+        [STAThread]
         static void Main(string[] args)
         {
-            GamePath = args[0];
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                    CheckFileExists = true,
+                    Multiselect = false,
+                    AddExtension = true,
+                    Filter = "Unity Game Executable (*.exe)|*.exe"
+            };
 
-            Console.WriteLine("Creating file system tree");
-            CreateFileSystemTree();
-            Console.WriteLine("Done!");
-            Console.ReadKey();
-            Console.WriteLine("Launching the game!");
-            LaunchGame();
-            Console.WriteLine("Done!");
-            Console.ReadKey();
+            DialogResult res = dialog.ShowDialog();
+
+            if (res == DialogResult.OK)
+            {
+                GamePath = dialog.FileName;
+                Console.WriteLine($"Selected file: {GamePath}");
+
+                Console.WriteLine("Creating file system tree");
+                CreateFileSystemTree();
+
+                Console.WriteLine("Launching the game with custom Doorstop args!");
+                LaunchGame();
+            }
         }
 
         static void LaunchGame()
