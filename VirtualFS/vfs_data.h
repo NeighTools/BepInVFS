@@ -98,6 +98,8 @@ namespace vfs
 		};
 	}
 
+	// A helper to easily distiguish a type of VFS object
+	// We use an enum because we only have two VFS objects (file and folder)
 	enum VFSObjectType
 	{
 		None,
@@ -105,6 +107,7 @@ namespace vfs
 		File
 	};
 
+	// A common VFS object
 	class vfs_object
 	{
 	public:
@@ -123,22 +126,13 @@ namespace vfs
 			return type_ == File;
 		}
 
-		vfs_object* get_parent() const
-		{
-			return parent;
-		}
-
-		void set_parent(vfs_object* val)
-		{
-			parent = val;
-		}
-
 	protected:
 		VFSObjectType type_ = None;
 
 		vfs_object* parent = nullptr;
 	};
 
+	// A VFS file. Contains a path to the original file.
 	class vfs_file : public vfs_object
 	{
 	public:
@@ -148,7 +142,7 @@ namespace vfs
 			original_file = str;
 		}
 
-		std::wstring& get_file()
+		std::wstring& get_real_file()
 		{
 			return original_file;
 		}
@@ -157,6 +151,7 @@ namespace vfs
 		std::wstring original_file;
 	};
 
+	// VFS Folder. Contains a case-insensitive map of VFS objects
 	class vfs_folder : public vfs_object
 	{
 	public:
@@ -181,6 +176,8 @@ namespace vfs
 			return contents_;
 		}
 
+		// Parses the provided stream into a VFS folder
+		// We use a simlified FSM with the help of gotos (I know, shame on me; didn't bother with proper states)
 		void parse(std::wistream& stream)
 		{
 			vfs_folder* new_folder;
