@@ -1,15 +1,13 @@
 #pragma once
 
-#include "stdafx.h"
 #include <map>
-#include <fstream>
 #include <sstream>
 
 namespace vfs
 {
 	namespace details
 	{
-		inline bool skip_until(std::wistream& stream, wchar_t ch)
+		inline bool skip_until(std::istream& stream, char ch)
 		{
 			while (!stream.eof())
 			{
@@ -19,7 +17,7 @@ namespace vfs
 			return false;
 		}
 
-		inline bool skip_until_block(std::wistream& stream, wchar_t ch, wchar_t block_end)
+		inline bool skip_until_block(std::istream& stream, char ch, char block_end)
 		{
 			while (!stream.eof())
 			{
@@ -34,14 +32,20 @@ namespace vfs
 			return false;
 		}
 
-		inline std::wstring read_until(std::wistream& stream, wchar_t ch)
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
+		inline std::wstring AStringToWString(const std::string& str)
 		{
-			std::wstringbuf buf;
+			return converterX.from_bytes(str);
+		}
+
+		inline std::wstring read_until(std::istream& stream, char ch)
+		{
+			std::stringbuf buf;
 			bool is_escape = false;
-			wchar_t c;
+			char c;
 			while (!stream.eof() && (c = stream.get()) != ch)
 			{
-				if (c == L'\\' && !is_escape)
+				if (c == '\\' && !is_escape)
 				{
 					is_escape = true;
 					continue;
@@ -52,20 +56,20 @@ namespace vfs
 					is_escape = false;
 					switch (c)
 					{
-					case L'\\':
-						c = L'\\';
+					case '\\':
+						c = '\\';
 						break;
-					case L'\"':
-						c = L'\"';
+					case '\"':
+						c = '\"';
 						break;
-					case L't':
-						c = L'\t';
+					case 't':
+						c = '\t';
 						break;
-					case L'n':
-						c = L'\n';
+					case 'n':
+						c = '\n';
 						break;
-					case L'r':
-						c = L'\r';
+					case 'r':
+						c = '\r';
 						break;
 					default:
 						continue;
@@ -74,10 +78,10 @@ namespace vfs
 
 				buf.sputc(c);
 			}
-			return buf.str();
+			return AStringToWString(buf.str());
 		}
 
-		inline bool skip_whitespace(std::wistream& stream)
+		inline bool skip_whitespace(std::istream& stream)
 		{
 			while (!stream.eof())
 			{
@@ -178,7 +182,7 @@ namespace vfs
 
 		// Parses the provided stream into a VFS folder
 		// We use a simlified FSM with the help of gotos (I know, shame on me; didn't bother with proper states)
-		void parse(std::wistream& stream)
+		void parse(std::istream& stream)
 		{
 			vfs_folder* new_folder;
 			vfs_file* new_file;
@@ -187,37 +191,38 @@ namespace vfs
 			while (true)
 			{
 			folder_start:
-				if (!details::skip_until(stream, L'{'))
+				if (!details::skip_until(stream, '{'))
 					return;
 
 			parse_folder:
-				while (!stream.eof() && stream.peek() != L'}')
+				while (!stream.eof() && stream.peek() != '}')
 				{
-					if (!details::skip_until(stream, L'"'))
+					if (!details::skip_until(stream, '"'))
 						return;
 
-					const auto key = details::read_until(stream, L'"');
+					const auto key = details::read_until(stream, '"');
 
-					if (!details::skip_until(stream, L':') || !details::skip_whitespace(stream))
+					if (!details::skip_until(stream, ':') || !details::skip_whitespace(stream))
 						return;
 
 					switch (stream.peek())
 					{
-					case L'{':
+					case '{':
 						new_folder = new vfs_folder;
 						folder->contents_[key] = new_folder;
 						new_folder->parent = folder;
 						folder = new_folder;
 						goto folder_start;
-					case L'"':
-						new_file = new vfs_file(details::read_until(stream, L'"'));
+					case '"':
+						stream.get();
+						new_file = new vfs_file(details::read_until(stream, '"'));
 						folder->contents_[key] = new_file;
 						break;
 					default:
 						return;
 					}
 
-					if (!details::skip_until_block(stream, L',', L'}') || !details::skip_whitespace(stream))
+					if (!details::skip_until_block(stream, ',', '}') || !details::skip_whitespace(stream))
 						return;
 				}
 
@@ -228,7 +233,7 @@ namespace vfs
 				{
 					folder = dynamic_cast<vfs_folder*>(folder->parent);
 
-					if (!details::skip_until_block(stream, L',', L'}') || !details::skip_whitespace(stream))
+					if (!details::skip_until_block(stream, ',', '}') || !details::skip_whitespace(stream))
 						return;
 
 					goto parse_folder;
