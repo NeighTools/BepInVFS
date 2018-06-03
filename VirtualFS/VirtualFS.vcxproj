@@ -147,8 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="vfs_data.h" />
     <ClInclude Include="VirtualFS.h" />
   </ItemGroup>
   <ItemGroup>

@@ -4,18 +4,8 @@
 #endif
 
 #include <windows.h>
-#include "json.hpp"
-#include <stdio.h>
-#include <stdlib.h>
 #include "../lib/minhook/include/MinHook.h"
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <map>
 #include <regex>
-#include <stack>
-#include <algorithm>
-#include <direct.h>
 #include <experimental/filesystem>
 #include <list>
 

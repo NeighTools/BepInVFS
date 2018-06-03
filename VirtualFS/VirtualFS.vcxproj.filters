@@ -21,7 +21,7 @@
     <ClInclude Include="VirtualFS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="json.hpp">
+    <ClInclude Include="vfs_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
