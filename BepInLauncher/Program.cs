@@ -41,7 +41,7 @@ namespace BepInLauncher
 
         static void LaunchGame()
         {
-            Process p = Process.Start(GamePath, "--doorstop-enable true --doorstop-target \"BepInEx\\bin\\BepInPreloader.dll\"");
+            Process p = Process.Start(GamePath, $"--doorstop-enable true --doorstop-target \"{Path.GetFullPath("BepInEx\\bin\\BepInPreloader.dll")}\"");
         }
 
         static void CreateFileSystemTree()
@@ -64,6 +64,8 @@ namespace BepInLauncher
 
         static void GenTree(JSONObject treeRoot, string path)
         {
+            path = Path.GetFullPath(path);
+
             // TODO: Handle ambiguities
 
             foreach (string directory in Directory.GetDirectories(path))

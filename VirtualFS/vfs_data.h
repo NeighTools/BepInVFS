@@ -1,3 +1,15 @@
+/*
+ * vfs_data.h -- Simplified JSON parser optimized for VFS trees.
+ * 
+ * This is a very basic and barebones implementation of JSON parser for use with VFS.
+ * 
+ * The parser can only handle objects and string values (which is enough for our case anyway).
+ * No caching, everything is parsed into memory at once.
+ * 
+ * The JSON parser reads a normal UTF-8 file (as a ifstream, not wifstream) and converts all char strings
+ * to wchar strings via codecvt.
+ */
+
 #pragma once
 
 #include <map>
@@ -32,6 +44,9 @@ namespace vfs
 			return false;
 		}
 
+		// Use codecvt to convert UTF8 to UTF16.
+		// We have to that in order to both work with W-functions and have valid encoding of
+		// Japanese characters (especially when they are handled on the managed side).
 		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
 		inline std::wstring AStringToWString(const std::string& str)
 		{
@@ -42,9 +57,14 @@ namespace vfs
 		{
 			std::stringbuf buf;
 			bool is_escape = false;
-			char c;
-			while (!stream.eof() && (c = stream.get()) != ch)
+
+			while (!stream.eof())
 			{
+
+				char c = stream.get();
+				if (c == ch && !is_escape)
+					break;
+
 				if (c == '\\' && !is_escape)
 				{
 					is_escape = true;
