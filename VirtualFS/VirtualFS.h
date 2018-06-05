@@ -23,3 +23,9 @@ DWORD (WINAPI* TrueGetFileAttributesW)(LPCWSTR lpFileName);
 HANDLE (WINAPI* TrueCreateFileW)(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
                                  LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
                                  DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
+
+BOOL (WINAPI* TrueCreateDirectoryW)(LPCWSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
+
+BOOL (WINAPI* TrueDeleteFileW)(LPCWSTR lpFileName);
+
+BOOL (WINAPI* TrueRemoveDirectoryW)(LPCWSTR lpPathName);

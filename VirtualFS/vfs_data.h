@@ -150,6 +150,16 @@ namespace vfs
 			return type_ == File;
 		}
 
+		vfs_object* get_parent() const
+		{
+			return parent;
+		}
+
+		void set_parent(vfs_object* new_parent)
+		{
+			parent = new_parent;
+		}
+
 	protected:
 		VFSObjectType type_ = None;
 
@@ -236,6 +246,7 @@ namespace vfs
 					case '"':
 						stream.get();
 						new_file = new vfs_file(details::read_until(stream, '"'));
+						new_file->set_parent(folder);
 						folder->contents_[key] = new_file;
 						break;
 					default:
