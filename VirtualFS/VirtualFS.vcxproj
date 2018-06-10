@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="logging.h" />
     <ClInclude Include="vfs_data.h" />
     <ClInclude Include="VirtualFS.h" />
   </ItemGroup>
