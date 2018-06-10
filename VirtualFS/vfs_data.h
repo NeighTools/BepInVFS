@@ -14,6 +14,7 @@
 
 #include <map>
 #include <sstream>
+#include "wideutils.h"
 
 namespace vfs
 {
@@ -42,15 +43,6 @@ namespace vfs
 				}
 			}
 			return false;
-		}
-
-		// Use codecvt to convert UTF8 to UTF16.
-		// We have to that in order to both work with W-functions and have valid encoding of
-		// Japanese characters (especially when they are handled on the managed side).
-		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converterX;
-		inline std::wstring AStringToWString(const std::string& str)
-		{
-			return converterX.from_bytes(str);
 		}
 
 		inline std::wstring read_until(std::istream& stream, char ch)
@@ -98,7 +90,7 @@ namespace vfs
 
 				buf.sputc(c);
 			}
-			return AStringToWString(buf.str());
+			return widen(buf.str());
 		}
 
 		inline bool skip_whitespace(std::istream& stream)

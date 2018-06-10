@@ -24,6 +24,9 @@
     <ClInclude Include="logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wideutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VirtualFS.cpp">

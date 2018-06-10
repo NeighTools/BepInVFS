@@ -162,6 +162,7 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="vfs_data.h" />
     <ClInclude Include="VirtualFS.h" />
+    <ClInclude Include="wideutils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VirtualFS.cpp" />
