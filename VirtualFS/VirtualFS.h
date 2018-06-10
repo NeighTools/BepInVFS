@@ -29,3 +29,10 @@ BOOL (WINAPI* TrueCreateDirectoryW)(LPCWSTR lpPathName, LPSECURITY_ATTRIBUTES lp
 BOOL (WINAPI* TrueDeleteFileW)(LPCWSTR lpFileName);
 
 BOOL (WINAPI* TrueRemoveDirectoryW)(LPCWSTR lpPathName);
+
+BOOL (WINAPI* TrueSetCurrentDirectoryW)(LPCWSTR lpPathName);
+
+BOOL (WINAPI* TrueGetCurrentDirectoryW)(DWORD nBufferLength, LPWSTR buffer);
+
+HANDLE (WINAPI* TrueFindFirstFileExW)(LPCWSTR lpFileName, FINDEX_INFO_LEVELS fInfoLevelId, LPVOID lpFindFileData,
+                                      FINDEX_SEARCH_OPS fSearchOp, LPVOID lpSearchFilter, DWORD dwAdditionalFlags);
