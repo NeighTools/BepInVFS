@@ -34,7 +34,7 @@ namespace BepInPreloader
             init_vfs = (InitVfsDelegate) Marshal.GetDelegateForFunctionPointer(ivfs, typeof(InitVfsDelegate));
 
             //TODO: We can generate VFS tree on the fly and pass it as a string instead
-            string vfsPath = Path.GetFullPath(CombinePaths(coreDir, "..", "..", "vfs.json"));
+            string vfsPath = Path.GetFullPath(CombinePaths(coreDir, "..", ".."));
 
             // Install VFS
             init_vfs(vfsPath, $"{gamePath}\\");
@@ -49,7 +49,7 @@ namespace BepInPreloader
             // Load BepInEx into memory and invoke it as if it were through Doorstop
             Assembly ass = Assembly.LoadFile(CombinePaths("BepInEx", "bin", "BepInEx.dll"));
             Type t = ass.GetType("BepInEx.Bootstrap.Preloader");
-            t.GetMethod("Main", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] {args});
+            t.GetMethod("Main", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { args });
         }
 
         private static string CombinePaths(params string[] paths)

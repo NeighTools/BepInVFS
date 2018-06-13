@@ -54,7 +54,7 @@ namespace BepInLauncher
 
             if (!Directory.Exists("__temp__"))
                 Directory.CreateDirectory("__temp__");
-            GenTree(o["BepInEx"].AsObject, "__temp__");
+            GenTree(o, "__temp__");
 
             foreach (string modDir in Directory.GetDirectories("mods"))
                 GenTree(o, modDir);
